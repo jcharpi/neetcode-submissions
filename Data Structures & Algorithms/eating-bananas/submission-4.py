@@ -1,0 +1,17 @@
+class Solution:
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        def isCorrect(bananas_per_hour):
+            hours = 0
+            for pile in piles:
+                hours += math.ceil(pile / bananas_per_hour)
+            return True if hours <= h else False
+        
+        low, high = 1, max(piles)
+        min_hours = float('inf')
+        while low <= high:
+            mid = (low + high) // 2
+            if isCorrect(mid):
+                high = mid - 1
+            else:
+                low = mid + 1
+        return low
