@@ -1,0 +1,30 @@
+class Twitter:
+
+    def __init__(self):
+        self.user_map = defaultdict(set)
+        self.tweets = defaultdict(list)
+        self.time = 1
+
+    def postTweet(self, userId: int, tweetId: int) -> None:
+        self.tweets[userId].append((self.time, tweetId))
+        self.time += 1
+
+    def getNewsFeed(self, userId: int) -> List[int]:
+        out = []
+        valid_tweets = list(self.tweets[userId][-10:])
+        for followerId in self.user_map[userId]:
+            valid_tweets.extend(self.tweets[followerId][-10:])
+
+        heapq.heapify_max(valid_tweets)
+        i = 0
+        while valid_tweets and i < 10:
+            out.append(heapq.heappop_max(valid_tweets)[1])
+            i += 1
+        return out
+
+    def follow(self, followerId: int, followeeId: int) -> None:
+        if (followerId != followeeId):
+            self.user_map[followerId].add(followeeId)
+
+    def unfollow(self, followerId: int, followeeId: int) -> None:
+        self.user_map[followerId].discard(followeeId)
